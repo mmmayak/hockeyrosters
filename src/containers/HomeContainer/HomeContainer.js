@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
-import { Grid, Typography, withStyles, ListItem, List, Button, TextField } from '@material-ui/core';
+import { Grid, Typography, withStyles, ListItem, List } from '@material-ui/core';
 import background from '../../assets/images/background.png';
 import UploadBtn from '../../components/UI/UploadBtn/UploadBtn';
 import SaveBtn from '../../components/UI/SaveBtn/SaveBtn';
-
+import CloseIcon from '@material-ui/icons/Close';
+import axios from 'axios';
 
 class HomeContainer extends Component {
-
   state = {
-    selectedFile: null
+    selectedFile: null,
+    loading: false,
+    isDoneLoad: false,
+    isError: null
   }
 
   fileSelectHandler = e => {
@@ -19,18 +22,64 @@ class HomeContainer extends Component {
 
   formatBytes = (bytes, decimals = 2) => {
     if (bytes === 0) return '0 Bytes';
-
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
+  sendData = () => {
+    const data = new FormData(this.state.selectedFile);
+    this.setState({
+      loading: true
+    });
+    axios.post('/api/sendemail', {file: data})
+    .then(response => {
+      this.setState({
+        loading: false,
+        isDoneLoad: true
+      })
+    })
+    .catch(err => {
+      this.setState({
+        isError: err
+      })
+    })
+  }
+
+  closeMessage = () => {
+    this.setState({
+      isDoneLoad: false
+    })
+  }
+
   render() {
     const { classes } = this.props;
+
+    let helperMessage;
+    if(this.state.selectedFile){
+      helperMessage = ( 
+      <ListItem>
+        <Grid container direction='column'>
+          <Typography className={classes.fileType}>Name: {this.state.selectedFile.name}</Typography>  
+          <Typography className={classes.fileType}>Size: {this.formatBytes(this.state.selectedFile.size)}</Typography>
+        </Grid>
+      </ListItem>
+      )
+    }else if(this.state.isDoneLoad){
+     helperMessage = (
+      <ListItem>
+        <Grid container direction='row'>
+          <Typography className={classes.successFile}>File successfully sended</Typography>
+          <CloseIcon className={classes.closeBtn} onClick={this.closeMessage}/> 
+        </Grid>
+      </ListItem>
+     )
+    }else {
+      helperMessage = null;
+    }
+
     return (
       <React.Fragment>
         <Grid item xs={12}>
@@ -61,23 +110,19 @@ class HomeContainer extends Component {
             <ListItem>
               <Typography className={classes.phone}>Call Us: 508-631-7451 </Typography>
             </ListItem>
-          
-            {this.state.selectedFile ?   
-              <ListItem>
-                <Grid container direction='column'>
-                  <Typography className={classes.fileType}>Name: {this.state.selectedFile.name}</Typography>  
-                  <Typography className={classes.fileType}>Size: {this.formatBytes(this.state.selectedFile.size)}</Typography>
-                </Grid>
-              </ListItem>: null}
+              {helperMessage}
             <ListItem>
               {this.state.selectedFile 
-                ? <SaveBtn />
+                ? <SaveBtn
+                    loading={this.state.loading}
+                    data={this.state.data}
+                    sendData={this.sendData}/>
                 : <UploadBtn
                   fileSelect={this.fileSelectHandler}/>}
             </ListItem>
           </List>
         </Grid>
-        <Grid item xs={12} md={8} className={classes.img}>
+        <Grid item xs={12} md={8} className={classes.img} style={{maxHeight: '497px'}}>
         </Grid>
         </Grid>
         </React.Fragment>
@@ -108,10 +153,10 @@ const styles = theme => ({
    background: `url(${background}) no-repeat center center`,
    backgroundSize: 'cover',
    [theme.breakpoints.down('sm')]: {
-     minHeight: '500px'
+     minHeight: '497px',
    },
    [theme.breakpoints.down('xs')]: {
-    minHeight: '300px'
+    minHeight: '300px',
   }
   },
   email: {
@@ -127,6 +172,16 @@ const styles = theme => ({
   },
   fileType: {
     color: '#9b9b9b'
+  },
+  successFile: {
+    color: '#0070c0'
+  },
+  closeBtn: {
+    color: '#9b9b9b',
+    cursor: 'pointer',
+    '&:hover': {
+      color: '#6d6d6d'
+    }
   }
 });
 

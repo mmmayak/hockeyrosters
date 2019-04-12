@@ -3,22 +3,22 @@ import { Button, withStyles } from '@material-ui/core';
 
  const UploadBtn = (props) => {
    const {classes} = props;
-  return (
-    <React.Fragment>
-      <input 
-        id='upload-btn-file'
-        className={classes.input}
-        type='file'
-        onChange={props.fileSelect}/>
-        <label className={classes.btnCont} htmlFor='upload-btn-file'>
-          <Button variant='contained' component='span' className={classes.button}>
-            Upload File
-          </Button>
-        </label>
-    </React.Fragment>
-   
-  )
-}
+    return (
+      <React.Fragment>
+        <input 
+          id='upload-btn-file'
+          className={classes.input}
+          type='file'
+          accept=".xlsx,.xls,.doc, .docx,.ppt, .pptx,.txt,.pdf"
+          onChange={props.fileSelect}/>
+          <label className={classes.btnCont} htmlFor='upload-btn-file'>
+            <Button variant='contained' component='span' className={classes.button}>
+              Upload File
+            </Button>
+          </label>
+      </React.Fragment>
+      )
+    }
 
 const styles = {
   btnCont: {

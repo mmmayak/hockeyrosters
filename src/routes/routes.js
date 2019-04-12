@@ -5,6 +5,7 @@ import HomeContainer from '../containers/HomeContainer/HomeContainer';
 import OptionsContainer from '../containers/OptionsContainer/OptionsContainer';
 import Faq from '../containers/Faq/Faq';
 import SampleContainer from '../containers/SampleContainer/SampleContainer';
+import NotFoundPage from '../components/NotFoundPage/NotFoundPage';
 
 class Routes extends Component {
   render(){
@@ -15,6 +16,7 @@ class Routes extends Component {
           <Route path='/sample' exact component={SampleContainer} />
           <Route path='/options' exact component={OptionsContainer}/>
           <Route path='/' exact component={HomeContainer}/>
+          <Route component={NotFoundPage} />
         </Switch>
       </Layout>
     )

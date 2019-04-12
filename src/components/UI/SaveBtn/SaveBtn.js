@@ -1,11 +1,16 @@
 import React from 'react';
 import { Button, withStyles } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
  const SaveBtn = (props) => {
   const {classes} = props;
   return (
-    <Button variant='contained' component='span' className={classes.button}>
-      Send File
+    <Button 
+      variant='contained' 
+      component='span' 
+      className={classes.button}
+      onClick={() => props.sendData(props.data)}>
+      {props.loading ? <CircularProgress className={classes.progress} /> : 'Send File'}
     </Button>
   )
 }
@@ -19,6 +24,9 @@ const styles = {
     '&:hover': {
       background: '#0288d1'
     }
+  },
+  progress: {
+    color: '#fff'
   }
 }
 
