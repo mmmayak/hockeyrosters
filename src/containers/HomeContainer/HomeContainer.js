@@ -108,10 +108,10 @@ const styles = theme => ({
    background: `url(${background}) no-repeat center center`,
    backgroundSize: 'cover',
    [theme.breakpoints.down('sm')]: {
-     height: '500px'
+     minHeight: '500px'
    },
    [theme.breakpoints.down('xs')]: {
-    height: '300px'
+    minHeight: '300px'
   }
   },
   email: {

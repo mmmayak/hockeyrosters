@@ -22,7 +22,7 @@ const Header = (props) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-          <a href={'http://localhost:3001/'} className={classes.logoContainer}>
+          <a href={'http://localhost:3000/'} className={classes.logoContainer}>
             <img className={classes.logo} src={logo}/>HockeyRosters
           </a>
           </Typography>
@@ -74,9 +74,10 @@ const styles = theme =>({
     fontSize: '22px'
   },
   logo: {
-    width: '100%',
-    height: '100%',
-    marginRight: '5px'
+    minWidth: '100%',
+    minHeight: '100%',
+    marginRight: '5px',
+    width: '100%'
   },
   active: {
     backgroundColor: 'rgba(0, 0, 0, 0.18)'
