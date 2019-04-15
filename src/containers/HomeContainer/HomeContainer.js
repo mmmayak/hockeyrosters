@@ -30,20 +30,26 @@ class HomeContainer extends Component {
 }
 
   sendData = () => {
-    const data = new FormData(this.state.selectedFile);
+    const data = new FormData();
+    data.append('attachment', this.state.selectedFile)
     this.setState({
       loading: true
     });
-    axios.post('/api/sendemail', {file: data})
+    axios.post('/api/sendemail/', data)
     .then(response => {
       this.setState({
         loading: false,
-        isDoneLoad: true
+        isDoneLoad: true,
+        selectedFile: null
       })
     })
     .catch(err => {
+      
       this.setState({
-        isError: err
+        loading: false,
+        selectedFile: null,
+        isDoneLoad: true,
+        isError: 'Something went wrong'
       })
     })
   }
@@ -56,7 +62,7 @@ class HomeContainer extends Component {
 
   render() {
     const { classes } = this.props;
-
+    
     let helperMessage;
     if(this.state.selectedFile){
       helperMessage = ( 
@@ -67,7 +73,19 @@ class HomeContainer extends Component {
         </Grid>
       </ListItem>
       )
+    }else if(this.state.isDoneLoad && this.state.isError){
+      helperMessage =(
+        <ListItem>
+          <Grid container direction='row'>
+            <Typography className={classes.errorMessage}>
+              {this.state.isError}
+            </Typography>
+            <CloseIcon className={classes.closeBtn} onClick={this.closeMessage}/> 
+          </Grid>
+        </ListItem>
+      )
     }else if(this.state.isDoneLoad){
+      
      helperMessage = (
       <ListItem>
         <Grid container direction='row'>
@@ -76,7 +94,8 @@ class HomeContainer extends Component {
         </Grid>
       </ListItem>
      )
-    }else {
+    }
+    else {
       helperMessage = null;
     }
 
@@ -182,6 +201,9 @@ const styles = theme => ({
     '&:hover': {
       color: '#6d6d6d'
     }
+  },
+  errorMessage: {
+    color: 'red'
   }
 });
 

@@ -64,7 +64,10 @@ const styles = theme =>({
     background: '#0070c0'
   },
   logoContainer: {
-    maxWidth: 60,
+    /* maxWidth: 60,
+    maxHeight: 60, */
+    width: '60px',
+    height: '60px',
     display: 'flex',
     alignItems: 'center',
     padding: '5px 0',

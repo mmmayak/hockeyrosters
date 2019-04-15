@@ -4,12 +4,14 @@ import UploadBtn from '../../components/UI/UploadBtn/UploadBtn';
 import Accordion from '../../components/UI/Accordion/Accordion';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveBtn from '../../components/UI/SaveBtn/SaveBtn';
+import axios from 'axios';
 
 class OptionsContainer extends Component {
   state = {
     selectedFile: null,
     loading: false,
-    isDoneLoad: false
+    isDoneLoad: false,
+    isError: null
   }
 
   fileSelectHandler = e => {
@@ -31,19 +33,28 @@ class OptionsContainer extends Component {
 }
 
 sendData = () => {
+  const data = new FormData();
+  data.append('attachment', this.state.selectedFile)
   this.setState({
     loading: true
+  });
+  axios.post('/api/sendemail/', data)
+  .then(response => {
+    this.setState({
+      loading: false,
+      isDoneLoad: true,
+      selectedFile: null
+    })
   })
-  setTimeout(
-    () => {
-      this.setState({
-        loading: false,
-        selectedFile: null,
-        isDoneLoad: true
-      })
-    },
-    3000
-);
+  .catch(err => {
+    
+    this.setState({
+      loading: false,
+      selectedFile: null,
+      isDoneLoad: true,
+      isError: 'Something went wrong'
+    })
+  })
 }
 
 closeMessage = () => {
@@ -66,7 +77,19 @@ closeMessage = () => {
         </Grid>
       </ListItem>
       )
+    }else if(this.state.isDoneLoad && this.state.isError){
+      helperMessage =(
+        <ListItem>
+          <Grid container direction='row'>
+            <Typography className={classes.errorMessage}>
+              {this.state.isError}
+            </Typography>
+            <CloseIcon className={classes.closeBtn} onClick={this.closeMessage}/> 
+          </Grid>
+        </ListItem>
+      )
     }else if(this.state.isDoneLoad){
+      
      helperMessage = (
       <ListItem>
         <Grid container direction='row'>
@@ -75,7 +98,8 @@ closeMessage = () => {
         </Grid>
       </ListItem>
      )
-    }else {
+    }
+    else {
       helperMessage = null;
     }
 
@@ -131,6 +155,9 @@ const styles = theme => ({
     '&:hover': {
       color: '#6d6d6d'
     }
+  },
+  errorMessage: {
+    color: 'red'
   }
 });
 
